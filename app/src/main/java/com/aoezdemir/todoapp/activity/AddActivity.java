@@ -21,7 +21,6 @@ import android.widget.Switch;
 import com.aoezdemir.todoapp.R;
 import com.aoezdemir.todoapp.activity.adapter.ContactAdapter;
 import com.aoezdemir.todoapp.crud.local.TodoDBHelper;
-import com.aoezdemir.todoapp.crud.remote.ServiceFactory;
 import com.aoezdemir.todoapp.model.Todo;
 import com.aoezdemir.todoapp.utils.AlertDialogMaker;
 import com.aoezdemir.todoapp.utils.ContactUtils;
@@ -31,10 +30,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -125,33 +120,6 @@ public class AddActivity extends AppCompatActivity {
                 TodoDBHelper db = new TodoDBHelper(this);
                 boolean dbInsertionSucceeded = db.insertTodo(todo);
                 if (dbInsertionSucceeded) {
-                    boolean isWebApiAccessible = getIntent().getBooleanExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
-                    if (isWebApiAccessible) {
-                        ServiceFactory.getServiceTodo().deleteAllTodos().enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                                Log.i(TAG, "All todos deleted on web API.");
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                                Log.e(TAG, "Could not deleteAllTodos all todos on web API." + t.getMessage());
-                            }
-                        });
-                        for (Todo todo : db.getAllTodos()) {
-                            ServiceFactory.getServiceTodo().createTodo(todo).enqueue(new Callback<Todo>() {
-                                @Override
-                                public void onResponse(@NonNull Call<Todo> call, @NonNull Response<Todo> response) {
-                                    Log.i(TAG, "Todo with id '" + todo.getId() + "' was created on web API.");
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<Todo> call, @NonNull Throwable t) {
-                                    Log.e(TAG, "Could not deleteAllTodos all todos on web API." + t.getMessage());
-                                }
-                            });
-                        }
-                    }
                     Intent addTodoIntent = new Intent();
                     addTodoIntent.putExtra(INTENT_KEY_TODO, todo);
                     setResult(RESULT_OK, addTodoIntent);

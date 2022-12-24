@@ -20,16 +20,11 @@ import android.widget.Toast;
 
 import com.aoezdemir.todoapp.R;
 import com.aoezdemir.todoapp.crud.local.TodoDBHelper;
-import com.aoezdemir.todoapp.crud.remote.ServiceFactory;
 import com.aoezdemir.todoapp.model.Todo;
 import com.aoezdemir.todoapp.utils.TodoListSorter;
 
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class OverviewActivity extends AppCompatActivity {
 
@@ -41,7 +36,7 @@ public class OverviewActivity extends AppCompatActivity {
     private List<Todo> todos;
     private TodoDBHelper db;
     private boolean sortDateBased = true;
-    private boolean isApiAccessable = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,41 +47,9 @@ public class OverviewActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvOverview.setLayoutManager(linearLayoutManager);
-
-        if (getIntent().hasExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE)) {
-            isApiAccessable = getIntent().getBooleanExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
-            if (!isApiAccessable) {
-                Toast.makeText(this, "Failed to access web API", Toast.LENGTH_SHORT).show();
-            }
-        }
         db = new TodoDBHelper(this);
         todos = db.getAllTodos();
-        if (isApiAccessable) {
-            ServiceFactory.getServiceTodo().readAllTodos().enqueue(new Callback<List<Todo>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Todo>> call, @NonNull Response<List<Todo>> response) {
-                    if (todos != null && !todos.isEmpty()) {
-                        deleteAllApiTodos();
-                        createAllApiTodosFromLocal();
-                    } else {
-                        todos = response.body();
-                        db.deleteAllTodos();
-                        if (db.insertAllTodos(todos)) {
-                            Log.d(TAG, "Failed to save all todos from web API.");
-                        }
-                    }
-                    initializeUIElements();
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Todo>> call, @NonNull Throwable t) {
-                    isApiAccessable = false;
-                    initializeUIElements();
-                }
-            });
-        } else {
-            initializeUIElements();
-        }
+        initializeUIElements();
     }
 
     @Override
@@ -132,35 +95,7 @@ public class OverviewActivity extends AppCompatActivity {
         }
     }
 
-    private void deleteAllApiTodos() {
-        ServiceFactory.getServiceTodo().deleteAllTodos().enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "All todos deleted on web API.");
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Could not deleteAllTodos all todos on web API." + t.getMessage());
-            }
-        });
-    }
-
-    private void createAllApiTodosFromLocal() {
-        for (Todo todo : todos) {
-            ServiceFactory.getServiceTodo().createTodo(todo).enqueue(new Callback<Todo>() {
-                @Override
-                public void onResponse(@NonNull Call<Todo> call, @NonNull Response<Todo> response) {
-                    Log.i(TAG, "Todo with id '" + todo.getId() + "' was created on web API.");
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<Todo> call, @NonNull Throwable t) {
-                    Log.e(TAG, "Could not deleteAllTodos all todos on web API." + t.getMessage());
-                }
-            });
-        }
-    }
 
     private void initializeUIElements() {
         ovAdapter = new OverviewAdapter();
@@ -168,7 +103,7 @@ public class OverviewActivity extends AppCompatActivity {
         rvOverview.setAdapter(ovAdapter);
         findViewById(R.id.fabAddTodo).setOnClickListener((View v) -> {
             Intent intent = new Intent(this, AddActivity.class);
-            intent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, isApiAccessable);
+            intent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
             startActivityForResult(intent, REQUEST_CREATE_NEW_TODO);
         });
     }
@@ -195,7 +130,7 @@ public class OverviewActivity extends AppCompatActivity {
                 holder.view.setOnClickListener((View v) -> {
                     Intent detailIntent = new Intent(v.getContext(), DetailviewActivity.class);
                     detailIntent.putExtra(DetailviewActivity.INTENT_KEY_TODO, todos.get(position));
-                    detailIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, isApiAccessable);
+                    detailIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
                     v.getContext().startActivity(detailIntent);
                 });
             }
@@ -269,25 +204,6 @@ public class OverviewActivity extends AppCompatActivity {
                     todo.setDone(!todo.isDone());
                     boolean dbUpdateSucceeded = db.updateTodo(todo);
                     if (dbUpdateSucceeded) {
-                        if (isApiAccessable) {
-                            ServiceFactory.getServiceTodo().updateTodo(todo.getId(), todo).enqueue(new Callback<Todo>() {
-                                @Override
-                                public void onResponse(@NonNull Call<Todo> call, @NonNull Response<Todo> response) {
-                                    if (!response.isSuccessful()) {
-                                        Toast.makeText(view.getContext(), "Remote error: Todo status was not changed", Toast.LENGTH_SHORT).show();
-                                        todo.setDone(!todo.isDone());
-                                        db.updateTodo(todo);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<Todo> call, @NonNull Throwable t) {
-                                    Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    todo.setDone(!todo.isDone());
-                                    db.updateTodo(todo);
-                                }
-                            });
-                        }
                         todos = TodoListSorter.sort(todos, sortDateBased);
                         adapter.notifyDataSetChanged();
                     } else {
@@ -303,25 +219,6 @@ public class OverviewActivity extends AppCompatActivity {
                     todo.setFavourite(!todo.isFavourite());
                     boolean dbUpdateSucceeded = db.updateTodo(todo);
                     if (dbUpdateSucceeded) {
-                        if (isApiAccessable) {
-                            ServiceFactory.getServiceTodo().updateTodo(todo.getId(), todo).enqueue(new Callback<Todo>() {
-                                @Override
-                                public void onResponse(@NonNull Call<Todo> call, @NonNull Response<Todo> response) {
-                                    if (!response.isSuccessful()) {
-                                        Toast.makeText(view.getContext(), "Remote error: Failed to change favourite state", Toast.LENGTH_SHORT).show();
-                                        todo.setFavourite(!todo.isFavourite());
-                                        db.updateTodo(todo);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<Todo> call, @NonNull Throwable t) {
-                                    Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    todo.setFavourite(!todo.isFavourite());
-                                    db.updateTodo(todo);
-                                }
-                            });
-                        }
                         todos = TodoListSorter.sort(todos, sortDateBased);
                         adapter.notifyDataSetChanged();
                         ibFavoriteToggle.setVisibility(todo.isDone() ? View.INVISIBLE : View.VISIBLE);
@@ -336,7 +233,7 @@ public class OverviewActivity extends AppCompatActivity {
                 ibEdit.setOnClickListener((View v) -> {
                     Intent editIntent = new Intent(view.getContext(), EditActivity.class);
                     editIntent.putExtra(EditActivity.INTENT_KEY_TODO, todo);
-                    editIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, isApiAccessable);
+                    editIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
                     ((Activity) view.getContext()).startActivityForResult(editIntent, REQUEST_EDIT_TODO);
                 });
             }
@@ -347,25 +244,6 @@ public class OverviewActivity extends AppCompatActivity {
                     todos.remove(position);
                     boolean dbDeletionSucceeded = db.deleteTodo(todo.getId());
                     if (dbDeletionSucceeded) {
-                        if (isApiAccessable) {
-                            ServiceFactory.getServiceTodo().deleteTodo(todo.getId()).enqueue(new Callback<ResponseBody>() {
-                                @Override
-                                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                                    if (!response.isSuccessful()) {
-                                        Toast.makeText(view.getContext(), "Remote error: Failed to deleteAllTodos todo", Toast.LENGTH_SHORT).show();
-                                        todos.add(position, todo);
-                                        db.insertTodo(todo);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                                    Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    todos.add(position, todo);
-                                    db.insertTodo(todo);
-                                }
-                            });
-                        }
                         adapter.notifyItemRemoved(position);
                         adapter.notifyDataSetChanged();
                     } else {

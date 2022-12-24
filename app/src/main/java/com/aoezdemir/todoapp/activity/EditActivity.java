@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.aoezdemir.todoapp.R;
 import com.aoezdemir.todoapp.activity.adapter.ContactAdapter;
 import com.aoezdemir.todoapp.crud.local.TodoDBHelper;
-import com.aoezdemir.todoapp.crud.remote.ServiceFactory;
 import com.aoezdemir.todoapp.model.Todo;
 import com.aoezdemir.todoapp.utils.AlertDialogMaker;
 import com.aoezdemir.todoapp.utils.ContactUtils;
@@ -33,9 +32,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class EditActivity extends AppCompatActivity {
 
@@ -50,7 +46,6 @@ public class EditActivity extends AppCompatActivity {
     private Switch sEditDone;
     private Switch sEditFavourite;
     private Button bSaveTodo;
-    private boolean isApiAccessible;
     private TodoDBHelper db;
     private ContactAdapter adapter;
 
@@ -59,7 +54,6 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
         todo = (Todo) getIntent().getSerializableExtra(INTENT_KEY_TODO);
-        isApiAccessible = getIntent().getBooleanExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
         db = new TodoDBHelper(this);
         adapter = new ContactAdapter(todo, true, getContentResolver(), this);
         expiry = Calendar.getInstance();
@@ -239,21 +233,6 @@ public class EditActivity extends AppCompatActivity {
             } else {
                 boolean dbUpdateSucceeded = db.updateTodo(todo);
                 if (dbUpdateSucceeded) {
-                    if (isApiAccessible) {
-                        ServiceFactory.getServiceTodo().updateTodo(todo.getId(), todo).enqueue(new Callback<Todo>() {
-                            @Override
-                            public void onResponse(@NonNull Call<Todo> call, @NonNull Response<Todo> response) {
-                                if (!response.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Remote error: Failed to updateTodo Todo", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<Todo> call, @NonNull Throwable t) {
-                                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
                     Intent editTodoIntent = new Intent();
                     editTodoIntent.putExtra(INTENT_KEY_TODO, todo);
                     setResult(RESULT_OK, editTodoIntent);
