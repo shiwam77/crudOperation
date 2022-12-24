@@ -8,7 +8,6 @@ In order for the app to be tested, the following prerequisites must be created/i
 * Android Studio
 * An Android virtual device to start the apk
 * The AVD must have at least one fictual contact
-* Run the JAR sample-webapi-1.0-SNAPSHOT-war-exec.jar at the repository [org.dieschnittstelle.mobile.android.samples.dataaccess](https://github.com/dieschnittstelle/org.dieschnittstelle.mobile.android.samples.dataaccess). This Java application provides a simple REST API for organizing all todos. The API is needed to use the login UI.
 
 ### Installing
 * Clone this Android project and open it in Android Studio.
@@ -28,11 +27,6 @@ The data model for Todos should allow to represent the following information:
 ### Saving todos
 Todos should be saved using both an external web application and a local data store. The Web application is provided as a Java EE Web Application.
 - [x] Todos are to be stored in an SQLite database on the mobile device
-- [x] If a write operation has been successfully executed on the local SQLite database, the relevant operation should be called on the web application. The IDs assigned by the SQLite database can be taken over by the web application
-- [x] If access to the Web application is not possible when the application is started, a warning message should be issued. In this case, only the local database will be used until the end of application usage, and the cases where an initial connection terminates during app usage or an initially unavailable web application becomes available during usage need not be taken into account.
-- [x] If the web application is available at the start of the Android application, the following "synchronization" should be implemented:
-- [x] If there are local todos, all todos on the Web application pages are deleted and the local todos are transferred to the Web application.
-- [x] If there are no local todos, all todos are transferred from the web application to the local database.
 
 ### Login
 The registration should be done by entering an email and a password and by pressing a login button.
@@ -85,6 +79,4 @@ Allow the association of a todo with a set of contacts at the data model level.
 ## Built with
 * Android
 * Gradle
-* Retrofit
 * SQLite
-* Gson
