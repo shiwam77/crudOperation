@@ -94,7 +94,7 @@ public class AddActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!etAddPrice.getText().toString().trim().isEmpty()) {
+                if (!etAddPrice.getText().toString().trim().isEmpty() && !etAddTitle.getText().toString().trim().isEmpty()) {
                     enableAddButton();
                 } else {
                     disableAddButton();
@@ -162,7 +162,7 @@ public class AddActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (!etAddTitle.getText().toString().trim().isEmpty()) {
+                if (!etAddTitle.getText().toString().trim().isEmpty() && !etAddPrice.getText().toString().trim().isEmpty()) {
                     enableAddButton();
                 } else {
                     disableAddButton();
