@@ -16,13 +16,16 @@ public class TodoDBHelper extends SQLiteOpenHelper {
     public static final String COL_TODO_NAME = "NAME";
     public static final String COL_TODO_DESCRIPTION = "DESCRIPTION";
     public static final String COL_TODO_EXPIRY = "EXPIRY";
+    public static final String COL_TODO_PRICE = "PRICE";
     public static final String COL_TODO_DONE = "DONE";
     public static final String COL_TODO_FAVOURITE = "FAVOURITE";
     public static final String COL_TODO_CONTACTS = "CONTACTS";
+    public static final String COL_TODO_IMAGES = "IMAGES";
 
     private static final String DATABASE_NAME = "Todos.db";
     private static final String TABLE_TODOS_NAME = "TODOS";
-    private static final String QUERY_CREATE_TODOS = "create table " + TABLE_TODOS_NAME + "(" + COL_TODO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COL_TODO_NAME + " TEXT NOT NULL, " + COL_TODO_DESCRIPTION + " TEXT, " + COL_TODO_EXPIRY + " INTEGER NOT NULL, " + COL_TODO_DONE + " INTEGER NOT NULL, " + COL_TODO_FAVOURITE + " INTEGER NOT NULL, " + COL_TODO_CONTACTS + " TEXT)";
+    private static final String QUERY_CREATE_TODOS = "create table " + TABLE_TODOS_NAME + "(" + COL_TODO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + COL_TODO_NAME + " TEXT NOT NULL, " + COL_TODO_DESCRIPTION + " TEXT, " + COL_TODO_EXPIRY + " INTEGER NOT NULL, " + COL_TODO_DONE + " INTEGER NOT NULL, " + COL_TODO_FAVOURITE + " INTEGER NOT NULL, " + COL_TODO_CONTACTS + " TEXT , " + COL_TODO_IMAGES + " BLOB, " + COL_TODO_PRICE + " TEXT " + ")";
+
 
     public TodoDBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);

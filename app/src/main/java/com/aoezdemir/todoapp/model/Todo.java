@@ -25,6 +25,8 @@ public class Todo implements Serializable {
     private Boolean favourite;
     private List<String> contacts;
     private Location location;
+    private byte[] image;
+    private String price;
 
     public Todo() {
         super();
@@ -32,7 +34,7 @@ public class Todo implements Serializable {
     }
 
     public Todo(Long id, String name, String description, Long expiry, Boolean done,
-                Boolean favourite, List<String> contacts) {
+                Boolean favourite, List<String> contacts,byte[] image,String price) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -40,6 +42,8 @@ public class Todo implements Serializable {
         this.done = done;
         this.favourite = favourite;
         this.contacts = contacts;
+        this.image = image;
+        this.price = price;
     }
 
     public static Todo createFrom(Cursor cursorTodo) {
@@ -50,10 +54,12 @@ public class Todo implements Serializable {
         Boolean done = cursorTodo.getInt(4) != 0;
         Boolean favourite = cursorTodo.getInt(5) != 0;
         String contactsdb = cursorTodo.getString(6);
+        byte[] image = cursorTodo.getBlob(7);
+        String price = cursorTodo.getString(8);
         List<String> contacts = contactsdb != null && !contactsdb.isEmpty() ?
                 new ArrayList<>(Arrays.asList(contactsdb.split(","))) :
                 new ArrayList<>();
-        return new Todo(id, name, description, expiry, done, favourite, contacts);
+        return new Todo(id, name, description, expiry, done, favourite, contacts, image,price);
     }
 
     public Long getId() {
@@ -66,6 +72,14 @@ public class Todo implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public String getPriceWithCurr() {
+        return "NPR " + price + "";
     }
 
     public void setName(String name) {
@@ -129,12 +143,24 @@ public class Todo implements Serializable {
         }
     }
 
+    public byte[] setImage(byte[] image){
+       return this.image = image;
+    }
+
+    public byte[] getImageFromDb(){
+        return this.image;
+    }
+
     public Location getLocation() {
         return location;
     }
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     @Override
@@ -152,6 +178,8 @@ public class Todo implements Serializable {
         cv.put(TodoDBHelper.COL_TODO_EXPIRY, expiry);
         cv.put(TodoDBHelper.COL_TODO_DONE, done ? 1 : 0);
         cv.put(TodoDBHelper.COL_TODO_FAVOURITE, favourite ? 1 : 0);
+        cv.put(TodoDBHelper.COL_TODO_IMAGES,image);
+        cv.put(TodoDBHelper.COL_TODO_PRICE,price);
         cv.put(TodoDBHelper.COL_TODO_CONTACTS, contacts == null ? null : android.text.TextUtils.join(",", contacts));
         return cv;
     }
@@ -159,7 +187,7 @@ public class Todo implements Serializable {
     @Override
     public String toString() {
         return "Todo {id = " + id + ", name = " + name + ", description = " + description +
-                ", expiry = " + expiry + ", done = " + done + ", favourite = " + favourite +
+                ", expiry = " + expiry + ", done = " + done + ", image = " + image + " favourite = " + favourite +
                 ", contacts = " + android.text.TextUtils.join(",", contacts) + "}";
     }
 }

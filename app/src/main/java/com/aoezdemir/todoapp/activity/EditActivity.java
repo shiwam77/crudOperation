@@ -3,8 +3,12 @@ package com.aoezdemir.todoapp.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +21,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -27,6 +32,8 @@ import com.aoezdemir.todoapp.model.Todo;
 import com.aoezdemir.todoapp.utils.AlertDialogMaker;
 import com.aoezdemir.todoapp.utils.ContactUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,21 +45,31 @@ public class EditActivity extends AppCompatActivity {
     public final static String INTENT_KEY_TODO = "EDIT_KEY_TODO";
     public final static int REQUEST_PICK_CONTACTS = 0;
     public final static int REQUEST_PERMISSIONS = 1;
+    int SELECT_PICTURE = 200;
+
 
     private Todo todo;
     private Calendar expiry;
     private EditText etEditTitle;
+    private EditText etEditPrice;
+
     private EditText etEditDescription;
     private Switch sEditDone;
     private Switch sEditFavourite;
     private Button bSaveTodo;
     private TodoDBHelper db;
     private ContactAdapter adapter;
+    private  Button bSelectImage;
+    ImageView IVPreviewImage;
+    byte[] byteArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+        IVPreviewImage = findViewById(R.id.IVPreviewImage);
+        bSelectImage = findViewById(R.id.BSelectImage);
+
         todo = (Todo) getIntent().getSerializableExtra(INTENT_KEY_TODO);
         db = new TodoDBHelper(this);
         adapter = new ContactAdapter(todo, true, getContentResolver(), this);
@@ -65,7 +82,42 @@ public class EditActivity extends AppCompatActivity {
         loadTodoDone();
         loadTodoFavourite();
         loadTodoContacts();
+        loadImage();
         loadSaveButton();
+        selectImage();
+    }
+
+    private void loadImage() {
+        byte[] arrayByte = todo.getImageFromDb();
+        if(arrayByte != null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(arrayByte,0,arrayByte.length);
+            IVPreviewImage.setVisibility(View.VISIBLE);
+            IVPreviewImage.setImageBitmap(bitmap);
+        }
+
+    }
+
+    private void selectImage(){
+        bSelectImage = findViewById(R.id.BSelectImage);
+        bSelectImage.setOnClickListener((View v) -> {
+            imageChooser();
+        });
+    }
+
+
+
+    // the Select Image Button is clicked
+    void imageChooser() {
+
+        // create an instance of the
+        // intent of the type image
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        // pass the constant to compare it
+        // with the returned requestCode
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     }
 
     @Override
@@ -75,6 +127,34 @@ public class EditActivity extends AppCompatActivity {
             adapter.setContacts(todo.getContacts());
             adapter.notifyDataSetChanged();
             enableSaveButton();
+        }
+        if (resultCode == RESULT_OK) {
+
+            // compare the resultCode with the
+            // SELECT_PICTURE constant
+            if (requestCode == SELECT_PICTURE) {
+                // Get the url of the image from data
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    // update the preview image in the layout
+                    IVPreviewImage.setVisibility(View.VISIBLE);
+
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        IVPreviewImage.setImageBitmap(bitmap);
+                        byteArray = stream.toByteArray();
+                        enableSaveButton();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -93,10 +173,14 @@ public class EditActivity extends AppCompatActivity {
         todo.setDone(sEditDone.isChecked());
         todo.setDescription(etEditDescription.getText().toString());
         todo.setFavourite(sEditFavourite.isChecked());
+        todo.setImage(byteArray);
+        todo.setPrice(etEditPrice.getText().toString());
     }
 
     private void loadTodoTitle() {
         etEditTitle = findViewById(R.id.etEditTitle);
+        etEditPrice = findViewById(R.id.etEditAddPrice);
+        etEditPrice.setText(todo.getPrice());
         etEditTitle.setText(todo.getName());
         etEditTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -110,6 +194,24 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!etEditTitle.getText().toString().trim().isEmpty()) {
+                    enableSaveButton();
+                } else {
+                    disableSaveButton();
+                }
+            }
+        });
+        etEditPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!etEditPrice.getText().toString().trim().isEmpty()) {
                     enableSaveButton();
                 } else {
                     disableSaveButton();

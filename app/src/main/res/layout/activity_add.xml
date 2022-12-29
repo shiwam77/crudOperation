@@ -98,6 +98,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAddDescriptionLabel" />
 
+
+        <TextView
+            android:id="@+id/tvAddPriceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:labelFor="@+id/etAddDescription"
+            android:text="Price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAddDescription" />
+
+
+        <EditText
+            android:id="@+id/etAddPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddPriceLabel" />
+
+
+
+        <ImageView
+            android:id="@+id/IVPreviewImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_below="@id/BSelectImage"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAddPrice"/>
+
+        <Button
+            android:id="@+id/BSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:text="SELECT IMAGE"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/IVPreviewImage"
+            />
+
         <Switch
             android:id="@+id/sAddFavourite"
             android:layout_width="wrap_content"
@@ -106,7 +161,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/favourite_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etAddDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/BSelectImage" />
 
         <TextView
             android:id="@+id/tvAddContacts"

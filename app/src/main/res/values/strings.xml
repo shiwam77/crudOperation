@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TodoApp</string>
+    <string name="app_name">BabyBuy</string>
 
     <string name="default_todo_title">DefaultTodoTitle</string>
     <string name="default_todo_date">DefaultTodoDate</string>
@@ -9,7 +9,7 @@
     <string name="favourite_icon_description">Icon of heart. Describes if todo is a favourite.</string>
     <string name="done_icon_description">Icon of circles. Describes if todo is a done.</string>
     <string name="delete_icon_name">Delete</string>
-    <string name="default_contacts_title">Linked contacts</string>
+    <string name="default_contacts_title">Linked Shop contacts</string>
     <string name="default_no_contacts_title">No linked contacts</string>
 
     // Add / Over / Edit view

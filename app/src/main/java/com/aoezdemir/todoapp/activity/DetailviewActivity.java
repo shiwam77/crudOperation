@@ -1,8 +1,15 @@
 package com.aoezdemir.todoapp.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +28,8 @@ import com.aoezdemir.todoapp.activity.adapter.ContactAdapter;
 import com.aoezdemir.todoapp.crud.local.TodoDBHelper;
 import com.aoezdemir.todoapp.model.Todo;
 
+import java.util.Objects;
+
 
 public class DetailviewActivity extends AppCompatActivity {
 
@@ -28,15 +37,53 @@ public class DetailviewActivity extends AppCompatActivity {
 
     private Todo todo;
     private TodoDBHelper db;
+    ImageView IVPreviewImage;
+    private SensorManager mSensorManager;
+    private float mAccel;
+    private float mAccelCurrent;
+    private float mAccelLast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Objects.requireNonNull(mSensorManager).registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        mAccel = 10f;
+        mAccelCurrent = SensorManager.GRAVITY_EARTH;
+        mAccelLast = SensorManager.GRAVITY_EARTH;
+
+        IVPreviewImage = findViewById(R.id.IVPreviewImage);
         todo = (Todo) getIntent().getSerializableExtra(INTENT_KEY_TODO);
         db = new TodoDBHelper(this);
         initializeDetailView();
     }
+
+    private final SensorEventListener mSensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            mAccelLast = mAccelCurrent;
+            mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+            float delta = mAccelCurrent - mAccelLast;
+            mAccel = mAccel * 0.9f + delta;
+            if (mAccel > 12) {
+                boolean dbDeletionSucceeded = db.deleteTodo(todo.getId());
+                if (dbDeletionSucceeded) {
+                    finish();
+                } else {
+                }
+            }
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,6 +132,17 @@ public class DetailviewActivity extends AppCompatActivity {
         loadTodoFavouriteIcon();
         loadTodoEdit();
         loadTodoContacts();
+        loadImage();
+        loadTodoPrice();
+    }
+    private void loadImage() {
+        byte[] arrayByte = todo.getImageFromDb();
+        if(arrayByte != null){
+            Bitmap bitmap = BitmapFactory.decodeByteArray(arrayByte,0,arrayByte.length);
+            IVPreviewImage.setVisibility(View.VISIBLE);
+            IVPreviewImage.setImageBitmap(bitmap);
+        }
+
     }
 
     private void loadTodoTitle() {
@@ -97,6 +155,12 @@ public class DetailviewActivity extends AppCompatActivity {
         TextView tvDetailDescription = findViewById(R.id.tvDetailDescription);
         tvDetailDescription.setText(todo.getDescription());
         tvDetailDescription.setTextColor(getResources().getColor(R.color.colorTodoDescriptionDefault, null));
+    }
+
+    private void loadTodoPrice() {
+        TextView tvDetailPrice = findViewById(R.id.tvDetailPrice);
+        tvDetailPrice.setText(todo.getPriceWithCurr());
+        tvDetailPrice.setTextColor(getResources().getColor(R.color.colorTodoDescriptionDefault, null));
     }
 
     private void loadTodoDate() {

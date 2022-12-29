@@ -1,12 +1,15 @@
 package com.aoezdemir.todoapp.activity.adapter;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -160,6 +163,20 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
             }
         }
 
+
+        private void initContact(String phone) {
+            if (editMode == null || phone == null) {
+            } else {
+                if (!editMode) {
+                    ivContactImage.setOnClickListener((View v) -> {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + phone +""));
+                        activity.startActivity(intent);
+                    });
+                }
+            }
+        }
+
         void loadContact(String contact, int position) {
             if (contact != null && !contact.isEmpty()) {
                 String contentId = contact.split(";")[0];
@@ -174,6 +191,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 initContactDelete(position);
                 initContactSendEmail(email);
                 initContactSendSms(phone);
+                initContact(phone);
             }
         }
     }
