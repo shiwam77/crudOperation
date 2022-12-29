@@ -185,7 +185,6 @@ public class DetailviewActivity extends AppCompatActivity {
         findViewById(R.id.fbaEditTodo).setOnClickListener((View v) -> {
             Intent editIntent = new Intent(v.getContext(), EditActivity.class);
             editIntent.putExtra(EditActivity.INTENT_KEY_TODO, todo);
-            editIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
             ((Activity) v.getContext()).startActivityForResult(editIntent, OverviewActivity.REQUEST_EDIT_TODO);
         });
     }

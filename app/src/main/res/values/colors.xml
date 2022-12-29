@@ -14,4 +14,33 @@
     // Login
     <color name="colorTextDefault">#000</color>
     <color name="colorTextError">#AA0000</color>
+
+    <color name="def_slice_btn_disabled_bg">#DDE4E9</color>
+    <color name="input_text_color">#38424F</color>
+    <color name="sc_purple">#583E81</color>
+    <color name="secondary_button_border_color">#DDE4E9</color>
+    <color name="error_border">#FFAAA0</color>
+    <color name="black_80">#80000000</color>
+    <color name="text_heading_color">#333333</color>
+    <color name="text_subtext_color">#8795A7</color>
+    <color name="su_btn_border_color_b4bfcb">#B4BFCB</color>
+
+    <!--permission screen colors-->
+    <color name="permission_name_text_color">#363648</color>
+    <color name="permission_desc_text_color">#9EA2B7</color>
+    <color name="confidential_info_color">#43A047</color>
+    <color name="deny_color">#9EA2B7</color>
+    <color name="transparent">#00000000</color>
+    <color name="red_dot">#E06153</color>
+    <color name="dont_press_back_bg_color">#F8FAFB</color>
+    <color name="dont_press_back_text_color">#71788C</color>
+    <color name="color_22242a">#22242A</color>
+    <color name="color_676B7E">#676B7E</color>
+    <color name="text_color_blue">#37305E</color>
+    <color name="circular_progress_grey">#F4F9F9</color>
+    <color name="scan_qr_overlay">#B3000000</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_38424F">#38424F</color>
+    <color name="color_00FF00">#00FF00</color>
+    <color name="color_negative">#BA1515</color>
 </resources>

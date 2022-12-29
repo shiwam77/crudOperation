@@ -123,7 +123,6 @@ public class RegisterActivity extends AppCompatActivity {
             String password = etPassword.getText().toString();
             pbLogin.setVisibility(View.VISIBLE);
             Intent intent = new Intent(v.getContext(), OverviewActivity.class);
-            intent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, true);
             startActivity(intent);
             pbLogin.setVisibility(View.INVISIBLE);
         });
@@ -141,11 +140,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void enableLoginButton() {
         bLogin.setEnabled(true);
-        bLogin.setBackgroundColor(getResources().getColor(R.color.colorAccent, null));
+        bLogin.setBackground(getResources().getDrawable(R.drawable.feature_border_radius,null));
     }
 
     private void disableLoginButton() {
         bLogin.setEnabled(false);
-        bLogin.setBackgroundColor(getResources().getColor(R.color.colorTodoTitleDone, null));
+        bLogin.setBackground(getResources().getDrawable(R.drawable.feature_border_radius_disable,null));
     }
 }

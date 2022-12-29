@@ -61,7 +61,7 @@ public class OverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_overview, menu);
+
         return true;
     }
 
@@ -103,7 +103,6 @@ public class OverviewActivity extends AppCompatActivity {
         rvOverview.setAdapter(ovAdapter);
         findViewById(R.id.fabAddTodo).setOnClickListener((View v) -> {
             Intent intent = new Intent(this, AddActivity.class);
-            intent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
             startActivityForResult(intent, REQUEST_CREATE_NEW_TODO);
         });
     }
@@ -130,7 +129,7 @@ public class OverviewActivity extends AppCompatActivity {
                 holder.view.setOnClickListener((View v) -> {
                     Intent detailIntent = new Intent(v.getContext(), DetailviewActivity.class);
                     detailIntent.putExtra(DetailviewActivity.INTENT_KEY_TODO, todos.get(position));
-                    detailIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
+
                     v.getContext().startActivity(detailIntent);
                 });
             }
@@ -233,7 +232,6 @@ public class OverviewActivity extends AppCompatActivity {
                 ibEdit.setOnClickListener((View v) -> {
                     Intent editIntent = new Intent(view.getContext(), EditActivity.class);
                     editIntent.putExtra(EditActivity.INTENT_KEY_TODO, todo);
-                    editIntent.putExtra(RouterEmptyActivity.INTENT_IS_WEB_API_ACCESSIBLE, false);
                     ((Activity) view.getContext()).startActivityForResult(editIntent, REQUEST_EDIT_TODO);
                 });
             }
