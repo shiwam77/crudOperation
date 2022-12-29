@@ -24,7 +24,6 @@ public class Todo implements Serializable {
     private Boolean done;
     private Boolean favourite;
     private List<String> contacts;
-    private Location location;
     private byte[] image;
     private String price;
 
@@ -151,13 +150,9 @@ public class Todo implements Serializable {
         return this.image;
     }
 
-    public Location getLocation() {
-        return location;
-    }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+
+
 
     public void setPrice(String price) {
         this.price = price;
