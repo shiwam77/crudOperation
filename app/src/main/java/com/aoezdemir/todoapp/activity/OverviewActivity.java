@@ -212,7 +212,7 @@ public class OverviewActivity extends AppCompatActivity {
             }
 
             private void initTodoFavouriteToggle(Todo todo) {
-                ibFavoriteToggle.setVisibility(todo.isDone() ? View.INVISIBLE : View.VISIBLE);
+                ibFavoriteToggle.setVisibility(View.GONE);
                 ibFavoriteToggle.setImageResource(todo.isFavourite() ? R.drawable.ic_favorite_red_24dp : R.drawable.ic_favorite_border_dark_gray_24dp);
                 ibFavoriteToggle.setOnClickListener((View v) -> {
                     todo.setFavourite(!todo.isFavourite());

@@ -94,6 +94,7 @@
                 android:layout_marginTop="16dp"
                 android:contentDescription="@string/favourite_icon_description"
                 android:scaleType="center"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailTitle"
                 app:srcCompat="@drawable/ic_favorite_border_dark_gray_24dp" />
