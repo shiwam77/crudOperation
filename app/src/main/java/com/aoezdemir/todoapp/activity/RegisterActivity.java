@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +24,6 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText etPassword;
     private EditText etConPassword;
     private Button bLogin;
-    private ProgressBar pbLogin;
     private TextView tvErrorInfo;
 
     @Override
@@ -114,17 +114,13 @@ public class RegisterActivity extends AppCompatActivity {
         });
         tvErrorInfo = findViewById(R.id.tvErrorInfo);
         tvErrorInfo.setVisibility(View.INVISIBLE);
-        pbLogin = findViewById(R.id.pbLogin);
-        pbLogin.setVisibility(View.INVISIBLE);
         bLogin = findViewById(R.id.bLogin);
         disableLoginButton();
         bLogin.setOnClickListener((View v) -> {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
-            pbLogin.setVisibility(View.VISIBLE);
             Intent intent = new Intent(v.getContext(), OverviewActivity.class);
             startActivity(intent);
-            pbLogin.setVisibility(View.INVISIBLE);
         });
     }
 

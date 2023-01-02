@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button bLogin;
     private Button bRegister;
-    private ProgressBar pbLogin;
     private TextView tvErrorInfo;
     private String globalEmail = "shiwamkarn77@gmail.com";
     private String globalPassword = "123456";
@@ -36,8 +36,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etLoginPassword);
         tvErrorInfo = findViewById(R.id.tvErrorInfo);
         tvErrorInfo.setVisibility(View.INVISIBLE);
-        pbLogin = findViewById(R.id.pbLogin);
-        pbLogin.setVisibility(View.INVISIBLE);
         bLogin = findViewById(R.id.bLogin);
         bRegister = findViewById(R.id.bRegister);
         enableLoginButton();
@@ -50,17 +48,14 @@ public class LoginActivity extends AppCompatActivity {
         bLogin.setOnClickListener((View v) -> {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
-            pbLogin.setVisibility(View.VISIBLE);
 
             if(isValidEmailAddress() && isValidPassword()){
                 if(email.trim().equals(globalEmail.trim()) && password.trim().equals(globalPassword.trim())){
                     Intent intent = new Intent(v.getContext(), OverviewActivity.class);
                     startActivity(intent);
-                    pbLogin.setVisibility(View.INVISIBLE);
                 }else{
                     tvErrorInfo.setVisibility(View.VISIBLE);
                     Toast.makeText(v.getContext(), "Local error: Failed to authenticate user (client error)", Toast.LENGTH_SHORT).show();
-                    pbLogin.setVisibility(View.INVISIBLE);
                 }
             }else{
                 Toast.makeText(v.getContext(), "Email or Password is not valid", Toast.LENGTH_SHORT).show();

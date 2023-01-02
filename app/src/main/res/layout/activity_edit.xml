@@ -10,6 +10,37 @@
         android:layout_height="wrap_content"
         android:isScrollContainer="true">
 
+
+
+        <ImageView
+            android:id="@+id/IVPreviewImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_below="@id/BSelectImage"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:visibility="visible"
+            android:src="@drawable/kisspngshopping"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/BSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="@color/colorAccent"
+            android:text="Change Image"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/IVPreviewImage"
+            />
+
         <TextView
             android:id="@+id/tvEditTitleLabel"
             android:layout_width="wrap_content"
@@ -19,7 +50,7 @@
             android:labelFor="@+id/etEditTitle"
             android:text="@string/title_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/BSelectImage"/>
 
         <EditText
             android:id="@+id/etEditTitle"
@@ -125,33 +156,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAddPriceLabel" />
 
-        <ImageView
-            android:id="@+id/IVPreviewImage"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_below="@id/BSelectImage"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etEditAddPrice"/>
 
-        <Button
-            android:id="@+id/BSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="Change Image"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/IVPreviewImage"
-            />
 
         <Switch
             android:id="@+id/sEditFavourite"
@@ -161,7 +166,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/favourite_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/BSelectImage" />
+            app:layout_constraintTop_toBottomOf="@+id/etEditAddPrice" />
 
         <Switch
             android:id="@+id/sEditDone"
@@ -171,7 +176,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/done_label"
             app:layout_constraintStart_toEndOf="@+id/sEditFavourite"
-            app:layout_constraintTop_toBottomOf="@+id/BSelectImage" />
+            app:layout_constraintTop_toBottomOf="@+id/etEditAddPrice" />
 
         <TextView
             android:id="@+id/tvEditContacts"
