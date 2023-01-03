@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            android:backgroundTint="@color/colorAccent"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:text="SELECT IMAGE"
             android:textColor="@android:color/white"
             android:textSize="18sp"
