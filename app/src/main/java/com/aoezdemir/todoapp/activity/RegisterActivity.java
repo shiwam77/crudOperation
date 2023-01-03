@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,129 +19,80 @@ import com.aoezdemir.todoapp.R;
 public class RegisterActivity extends AppCompatActivity {
 
 
-    private static final String TAG = LoginActivity.class.getSimpleName();
-
-    private EditText etEmail;
-    private EditText etPassword;
-    private EditText etConPassword;
-    private Button bLogin;
-    private TextView tvErrorInfo;
+    EditText Efname, Elname, Eemail, Epassword, Ecpassword;
+    Button rbtn;
+    TextView redirecttologin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        etEmail = findViewById(R.id.etLoginEmail);
-        etEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
 
+        //For input value
+        Efname = findViewById(R.id.fname);
+        Elname = findViewById(R.id.lname);
+        Eemail = findViewById(R.id.Email);
+        Epassword = findViewById(R.id.rpassword);
+        Ecpassword = findViewById(R.id.rconfirmpassword);
+
+
+        //For Registration and Login redirection Button
+        rbtn = findViewById(R.id.btnRegister);
+        redirecttologin = findViewById(R.id.btnRegister);
+
+        //Clicklistner add for register button
+        rbtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-                tvErrorInfo.setVisibility(View.INVISIBLE);
-                if (isValidEmailAddress()) {
-                    etEmail.setError(null);
-                    etEmail.setTextColor(getResources().getColor(R.color.colorTextDefault, null));
-                    if (isValidPassword()) {
-                        enableLoginButton();
-                    }
+            public void onClick(View view) {
+
+                //define string for input
+                String fname = Efname.getText().toString();
+                String lname = Elname.getText().toString();
+                String email = Eemail.getText().toString();
+                String password = Epassword.getText().toString();
+                String cpassword = Ecpassword.getText().toString();
+
+
+                //Emtpy value checked
+                if (fname.isEmpty() || lname.isEmpty() || email.isEmpty() || password.isEmpty() || cpassword.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, "Enter all data", Toast.LENGTH_SHORT).show();
                 } else {
-                    etEmail.setError("Please provide a valid email address");
-                    etEmail.setTextColor(getResources().getColor(R.color.colorTextError, null));
-                    disableLoginButton();
+
+                    if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+
+                        //password length checked
+                        if (password.length() >= 8) {
+
+                            //password and confirm password checked
+                            if (password.equals(cpassword)) {
+                                Intent intent = new Intent(view.getContext(), OverviewActivity.class);
+                                startActivity(intent);
+                            }
+                            //incase password and confirm password
+                            else {
+                                Ecpassword.setError("confirm password doesn't match");
+                                Toast.makeText(RegisterActivity.this, "confirm password doesn't match", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        //if password length doesn't match
+                        else {
+                            Epassword.setError("minimum 8 length");
+                            Toast.makeText(RegisterActivity.this, "Enter 8 digit password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    //if user didn't enter valid email address
+                    else {
+                        Eemail.setError("enter valid email");
+                        Toast.makeText(RegisterActivity.this, "Enter valid email", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
-        etPassword = findViewById(R.id.etLoginPassword);
-        etConPassword = findViewById(R.id.etConLoginPassword);
-        etPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                tvErrorInfo.setVisibility(View.INVISIBLE);
-                String password = etPassword.getText().toString().trim();
-                String conPassword = etConPassword.getText().toString().trim();
-                if (isValidPassword()) {
-                    etPassword.setError(null);
-                    etPassword.setTextColor(getResources().getColor(R.color.colorTextDefault, null));
-                    if (isValidEmailAddress() && password.equals(conPassword)) {
-                        enableLoginButton();
-                    }
-                } else {
-                    etPassword.setError("The password must provide exactly 6 numbers");
-                    etPassword.setTextColor(getResources().getColor(R.color.colorTextError, null));
-                    disableLoginButton();
-                }
-            }
-        });
 
-        etConPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                tvErrorInfo.setVisibility(View.INVISIBLE);
-                String password = etPassword.getText().toString().trim();
-                if (password.equals(etConPassword.getText().toString().trim()) && isValidEmailAddress()) {
-                    etConPassword.setError(null);
-                    etConPassword.setTextColor(getResources().getColor(R.color.colorTextDefault, null));
-                    if (isValidEmailAddress()) {
-                        enableLoginButton();
-                    }
-                } else {
-                    etConPassword.setError("Confirm password does not matched");
-                    etConPassword.setTextColor(getResources().getColor(R.color.colorTextError, null));
-                    disableLoginButton();
-                }
-            }
-        });
-        tvErrorInfo = findViewById(R.id.tvErrorInfo);
-        tvErrorInfo.setVisibility(View.INVISIBLE);
-        bLogin = findViewById(R.id.bLogin);
-        disableLoginButton();
-        bLogin.setOnClickListener((View v) -> {
-            String email = etEmail.getText().toString();
-            String password = etPassword.getText().toString();
-            Intent intent = new Intent(v.getContext(), OverviewActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    private boolean isValidEmailAddress() {
-        String email = etEmail.getText().toString();
-        return !email.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isValidPassword() {
-        String password = etPassword.getText().toString();
-        return !password.isEmpty() && password.length() == 6;
-    }
-
-    private void enableLoginButton() {
-        bLogin.setEnabled(true);
-        bLogin.setBackground(getResources().getDrawable(R.drawable.feature_border_radius,null));
-    }
-
-    private void disableLoginButton() {
-        bLogin.setEnabled(false);
-        bLogin.setBackground(getResources().getDrawable(R.drawable.feature_border_radius_disable,null));
     }
 }
