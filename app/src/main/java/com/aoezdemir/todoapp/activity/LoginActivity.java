@@ -1,17 +1,13 @@
 package com.aoezdemir.todoapp.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Patterns;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +18,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    EditText Eemail, Epassword;
-    Button Blogin, Bsignup;
-    String email, password;
+    private ImageView logo, ivSignIn, btnTwitter;
+    private AutoCompleteTextView email, password;
+    private TextView forgotPass, signUp;
+    private Button btnSignIn;
+    private ProgressDialog progressDialog;
     private String globalEmail = "shiwamkarn77@gmail.com";
     private String globalPassword = "123456";
 
@@ -34,49 +32,74 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Eemail = findViewById(R.id.inputEmail);
-        Epassword = findViewById(R.id.inputPassword);
-        Blogin = findViewById(R.id.Login_btnlogin);
-        Bsignup = findViewById(R.id.sign_up);
+        initializeGUI();
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        Bsignup.setOnClickListener((View v) ->{
-            Intent intent = new Intent(v.getContext(), RegisterActivity.class);
-            startActivity(intent);
+                String inEmail = email.getText().toString();
+                String inPassword = password.getText().toString();
 
+                if(validateInput(inEmail, inPassword)){
+                    signUser(inEmail, inPassword);
+                }
 
+            }
         });
-        Blogin.setOnClickListener((View v) -> {
+        signUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
 
-            email = Eemail.getText().toString();
-            password = Epassword.getText().toString();
-
-
-            //if condition for null value in edittext
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(LoginActivity.this, "Enter username and Password", Toast.LENGTH_SHORT).show();
             }
-
-            //Email pattern and password length checked
-            else if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Intent intent = new Intent(v.getContext(), OverviewActivity.class);
-                startActivity(intent);
-            }
-
-
-            //if email pattern is wrong show this message
-            else {
-                Toast.makeText(LoginActivity.this, "Please re-enter your email ", Toast.LENGTH_LONG).show();
-                Eemail.setError(" Valid email is required");
-            }
-
         });
+
+        forgotPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, PasswordResetActivity.class));
+            }
+        });
+
+    }
+
+    public void signUser(String email, String password){
+
+        progressDialog.setMessage("Verificating...");
+        progressDialog.show();
+        Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
+        startActivity(new Intent(LoginActivity.this,OverviewActivity.class));
+
+    }
+
+    private void initializeGUI(){
+
+        logo = findViewById(R.id.ivLogLogo);
+        ivSignIn = findViewById(R.id.ivSignIn);
+        email = findViewById(R.id.atvEmailLog);
+        password = findViewById(R.id.atvPasswordLog);
+        forgotPass = findViewById(R.id.tvForgotPass);
+        signUp = findViewById(R.id.tvSignIn);
+        btnSignIn = findViewById(R.id.btnSignIn);
+        progressDialog = new ProgressDialog(this);
+
+
     }
 
 
-    public void getemail() {
-        SharedPreferences sp=getSharedPreferences("Login", MODE_PRIVATE);
-        SharedPreferences.Editor Ed=sp.edit();
-        Ed.putString("email",email );
-        Ed.apply();
+    public boolean validateInput(String inemail, String inpassword){
+
+        if(inemail.isEmpty()){
+            email.setError("Email field is empty.");
+            return false;
+        }
+        if(inpassword.isEmpty()){
+            password.setError("Password is empty.");
+            return false;
+        }
+
+        return true;
     }
+
 }

@@ -1,5 +1,6 @@
 package com.aoezdemir.todoapp.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,9 +21,11 @@ import com.aoezdemir.todoapp.R;
 public class RegisterActivity extends AppCompatActivity {
 
 
-    EditText Efname, Elname, Eemail, Epassword, Ecpassword;
-    Button rbtn;
-    TextView redirecttologin;
+    private ImageView logo, joinus;
+    private AutoCompleteTextView username, email, password;
+    private Button signup;
+    private TextView signin;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,70 +33,75 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 
-        //For input value
-        Efname = findViewById(R.id.fname);
-        Elname = findViewById(R.id.lname);
-        Eemail = findViewById(R.id.Email);
-        Epassword = findViewById(R.id.rpassword);
-        Ecpassword = findViewById(R.id.rconfirmpassword);
+        initializeGUI();
 
-
-        //For Registration and Login redirection Button
-        rbtn = findViewById(R.id.btnRegister);
-        redirecttologin = findViewById(R.id.btnRegister);
-
-        //Clicklistner add for register button
-        rbtn.setOnClickListener(new View.OnClickListener() {
+        signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //define string for input
-                String fname = Efname.getText().toString();
-                String lname = Elname.getText().toString();
-                String email = Eemail.getText().toString();
-                String password = Epassword.getText().toString();
-                String cpassword = Ecpassword.getText().toString();
+                final String inputName = username.getText().toString().trim();
+                final String inputPw = password.getText().toString().trim();
+                final String inputEmail = email.getText().toString().trim();
+
+                if(validateInput(inputName, inputPw, inputEmail))
+                    registerUser(inputName, inputPw, inputEmail);
+
+            }
+        });
 
 
-                //Emtpy value checked
-                if (fname.isEmpty() || lname.isEmpty() || email.isEmpty() || password.isEmpty() || cpassword.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "Enter all data", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-
-                        //password length checked
-                        if (password.length() >= 8) {
-
-                            //password and confirm password checked
-                            if (password.equals(cpassword)) {
-                                Intent intent = new Intent(view.getContext(), OverviewActivity.class);
-                                startActivity(intent);
-                            }
-                            //incase password and confirm password
-                            else {
-                                Ecpassword.setError("confirm password doesn't match");
-                                Toast.makeText(RegisterActivity.this, "confirm password doesn't match", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        //if password length doesn't match
-                        else {
-                            Epassword.setError("minimum 8 length");
-                            Toast.makeText(RegisterActivity.this, "Enter 8 digit password", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    //if user didn't enter valid email address
-                    else {
-                        Eemail.setError("enter valid email");
-                        Toast.makeText(RegisterActivity.this, "Enter valid email", Toast.LENGTH_SHORT).show();
-                    }
-                }
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
             }
         });
 
 
 
     }
+
+    private void initializeGUI(){
+
+        logo = findViewById(R.id.ivRegLogo);
+        joinus = findViewById(R.id.ivJoinUs);
+        username = findViewById(R.id.atvUsernameReg);
+        email =  findViewById(R.id.atvEmailReg);
+        password = findViewById(R.id.atvPasswordReg);
+        signin = findViewById(R.id.tvSignIn);
+        signup = findViewById(R.id.btnSignUp);
+        progressDialog = new ProgressDialog(this);
+    }
+
+    private void registerUser(final String inputName, final String inputPw, String inputEmail) {
+
+        progressDialog.setMessage("Verificating...");
+        progressDialog.show();
+        Toast.makeText(RegisterActivity.this,"You've been registered successfully.",Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss();
+        startActivity(new Intent(RegisterActivity.this,RegisterActivity.class));
+
+    }
+
+
+
+
+    private boolean validateInput(String inName, String inPw, String inEmail){
+
+        if(inName.isEmpty()){
+            username.setError("Username is empty.");
+            return false;
+        }
+        if(inPw.isEmpty()){
+            password.setError("Password is empty.");
+            return false;
+        }
+        if(inEmail.isEmpty()){
+            email.setError("Email is empty.");
+            return false;
+        }
+
+        return true;
+    }
+
 }

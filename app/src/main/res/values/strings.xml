@@ -11,6 +11,14 @@
     <string name="delete_icon_name">Delete</string>
     <string name="default_contacts_title">Linked Shop contacts</string>
     <string name="default_no_contacts_title">No linked contacts</string>
+    <string name="usernameReg">Username</string>
+    <string name="emailReg">Email</string>
+    <string name="passwordReg">Password</string>
+    <string name="sign_upReg">Sign up</string>
+    <string name="sign_inLog">Sign in</string>
+    <string name="signin_redirect">Already a member? Sign in!</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="signup_redirect">Don\'t have an account? Register here!</string>
 
     // Add / Over / Edit view
     <string name="add_button">Add todo</string>

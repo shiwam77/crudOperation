@@ -7,6 +7,7 @@
     <color name="white">#F4EFEF</color>
     <color name="black">#0C0C0C</color>
 
+    <color name="gray">#5b5b5b</color>
 
     // Todo states
     <color name="colorTodoTitleDefault">#000</color>
