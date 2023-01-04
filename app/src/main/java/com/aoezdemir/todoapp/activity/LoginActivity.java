@@ -25,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button bRegister;
     private ProgressBar pbLogin;
     private TextView tvErrorInfo;
-    private String globalEmail = "sitakarn@gmail.com";
+    private String globalEmail = "karn@gmail.com";
     private String globalPassword = "123456";
 
     @Override
