@@ -11,6 +11,8 @@
     <color name="colorTodoDateDefault">#AAA</color>
     <color name="colorTodoDateExpired">#7B2869</color>
 
+    <color name="themecolor">#CB1C8D</color>
+
     // Login
     <color name="colorTextDefault">#000</color>
     <color name="colorTextError">#AA0000</color>
