@@ -6,10 +6,10 @@
 
     // Todo states
     <color name="colorTodoTitleDefault">#000</color>
-    <color name="colorTodoTitleDone">#AAA</color>
+    <color name="colorTodoTitleDone">#7B2869</color>
     <color name="colorTodoDescriptionDefault">#000</color>
     <color name="colorTodoDateDefault">#AAA</color>
-    <color name="colorTodoDateExpired">#AA0000</color>
+    <color name="colorTodoDateExpired">#7B2869</color>
 
     // Login
     <color name="colorTextDefault">#000</color>
